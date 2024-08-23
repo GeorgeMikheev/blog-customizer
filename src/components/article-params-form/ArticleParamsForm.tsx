@@ -6,8 +6,9 @@ import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Text } from '../text';
 import { Separator } from '../separator';
+import { TProps } from 'src/index';
 
-export const ArticleParamsForm = (props: any) => {
+export const ArticleParamsForm = (props: TProps) => {
 
 
 	return (
@@ -43,6 +44,12 @@ export const ArticleParamsForm = (props: any) => {
 						onChange={props.changeColor}
 					/>
 					<Separator />
+					<Select
+						options={props.backgroundColors}
+						selected={props.formState.backgroundColor}
+						title='Цвет фона'
+						onChange={props.changeBackgroundColor}
+					/>
 					<Select
 						options={props.contentWidthArr}
 						selected={props.formState.contentWidth}
