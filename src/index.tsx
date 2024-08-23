@@ -1,17 +1,13 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties } from 'react';
+import { StrictMode, CSSProperties, useState } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
-import { ArticleStateType, FontFamiliesClasses, OptionType, defaultArticleState } from './constants/articleProps';
-
-import './styles/index.scss';
-import styles from './styles/index.module.scss';
-
-import { useState } from 'react';
-
 import {
+	ArticleStateType,
+	OptionType,
+	defaultArticleState,
 	fontFamilyOptions,
 	fontFamilyClasses,
 	fontSizeOptions,
@@ -19,6 +15,9 @@ import {
 	contentWidthArr,
 	backgroundColors,
 } from './constants/articleProps';
+
+import './styles/index.scss';
+import styles from './styles/index.module.scss';
 
 export type TProps = {
 	asideIsOpen: boolean;
@@ -29,7 +28,7 @@ export type TProps = {
 	formState: ArticleStateType;
 	backgroundColors: OptionType[];
 	contentWidthArr: OptionType[];
-	openAside(): void;
+	changeStateAside(): void;
 	changeFontFamily(selected: OptionType): void;
 	changeFontSize(selected: OptionType): void;
 	changeColor(selected: OptionType): void;
@@ -37,7 +36,7 @@ export type TProps = {
 	changeWidthContent(selected: OptionType): void;
 	onClickReset(): void;
 	onClickApply(evt: React.FormEvent): void;
-}
+};
 
 const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
@@ -47,24 +46,33 @@ const App = () => {
 	const [asideIsOpen, setAsideOpen] = useState(false);
 	const [formState, setFormState] = useState(appState);
 
-	const openAside = () => setAsideOpen(prevState => !prevState);
+	const changeStateAside = () => setAsideOpen((prevState) => !prevState);
 
-	const changeFontFamily = (selected: OptionType) => setFormState({...formState, fontFamilyOption: selected});
-	const changeFontSize = (selected: OptionType) => setFormState({...formState, fontSizeOption: selected});
-	const changeColor = (selected: OptionType) => setFormState({...formState, fontColor: selected});
-	const changeBackgroundColor = (selected: OptionType) => setFormState({...formState, backgroundColor: selected});
-	const changeWidthContent = (selected: OptionType) => setFormState({...formState, contentWidth: selected});
+	const changeFontFamily = (selected: OptionType) =>
+		setFormState({ ...formState, fontFamilyOption: selected });
+	const changeFontSize = (selected: OptionType) =>
+		setFormState({ ...formState, fontSizeOption: selected });
+	const changeColor = (selected: OptionType) =>
+		setFormState({ ...formState, fontColor: selected });
+	const changeBackgroundColor = (selected: OptionType) =>
+		setFormState({ ...formState, backgroundColor: selected });
+	const changeWidthContent = (selected: OptionType) =>
+		setFormState({ ...formState, contentWidth: selected });
 
 	const onClickReset = () => {
 		setFormState(defaultArticleState);
 		setAppState(defaultArticleState);
-	}
+	};
 
 	const onClickApply = (evt: React.FormEvent) => {
 		evt.preventDefault();
 		setAppState(formState);
-		console.log(appState)
-	}
+		console.log(appState);
+	};
+
+	const closeAside = () => {
+		if (asideIsOpen) changeStateAside();
+	};
 
 	const props: TProps = {
 		asideIsOpen,
@@ -75,7 +83,7 @@ const App = () => {
 		formState,
 		backgroundColors,
 		contentWidthArr,
-		openAside,
+		changeStateAside,
 		changeFontFamily,
 		changeFontSize,
 		changeColor,
@@ -83,7 +91,7 @@ const App = () => {
 		changeWidthContent,
 		onClickReset,
 		onClickApply,
-	}
+	};
 
 	return (
 		<div
@@ -98,7 +106,7 @@ const App = () => {
 				} as CSSProperties
 			}>
 			<ArticleParamsForm {...props} />
-			<Article />
+			<Article closeAside={closeAside} />
 		</div>
 	);
 };

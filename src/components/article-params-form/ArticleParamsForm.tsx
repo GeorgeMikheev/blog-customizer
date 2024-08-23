@@ -9,13 +9,16 @@ import { Separator } from '../separator';
 import { TProps } from 'src/index';
 
 export const ArticleParamsForm = (props: TProps) => {
-
-
 	return (
 		<>
-			<ArrowButton open={props.openAside} isOpen={props.asideIsOpen} />
-			<aside className={props.asideIsOpen ? `${styles.container_open} ${styles.container}` : styles.container}>
-				<form className={styles.form} onSubmit={props.onClickApply} >
+			<ArrowButton open={props.changeStateAside} isOpen={props.asideIsOpen} />
+			<aside
+				className={
+					props.asideIsOpen
+						? `${styles.container_open} ${styles.container}`
+						: styles.container
+				}>
+				<form className={styles.form} onSubmit={props.onClickApply}>
 					<Text
 						as='h2'
 						size={31}
@@ -35,7 +38,6 @@ export const ArticleParamsForm = (props: TProps) => {
 						options={props.fontSizeOptions}
 						selected={props.formState.fontSizeOption}
 						onChange={props.changeFontSize}
-
 					/>
 					<Select
 						options={props.fontColors}
@@ -57,7 +59,11 @@ export const ArticleParamsForm = (props: TProps) => {
 						onChange={props.changeWidthContent}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button onClick={props.onClickReset} title='Сбросить' type='reset' />
+						<Button
+							onClick={props.onClickReset}
+							title='Сбросить'
+							type='reset'
+						/>
 						<Button title='Применить' type='submit' />
 					</div>
 				</form>

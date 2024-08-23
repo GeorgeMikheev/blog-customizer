@@ -25,7 +25,7 @@ export const Select = (props: SelectProps) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const rootRef = useRef<HTMLDivElement>(null);
 	const placeholderRef = useRef<HTMLDivElement>(null);
-	
+
 	useOutsideClickClose({
 		isOpen,
 		rootRef,
