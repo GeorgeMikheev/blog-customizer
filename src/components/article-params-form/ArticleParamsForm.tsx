@@ -1,21 +1,56 @@
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
-import { useState } from 'react';
 
 import styles from './ArticleParamsForm.module.scss';
+import { RadioGroup } from '../radio-group';
+import { Select } from '../select';
+import { Text } from '../text';
+import { Separator } from '../separator';
 
-export const ArticleParamsForm = () => {
-	const [asideIsOpen, setAsideOpen] = useState(false);
+export const ArticleParamsForm = (props: any) => {
 
-	const openAside = () => setAsideOpen(prevState => !prevState);
 
 	return (
 		<>
-			<ArrowButton open={openAside} isOpen={asideIsOpen} />
-			<aside className={asideIsOpen ? `${styles.container_open} ${styles.container}` : styles.container}>
-				<form className={styles.form}>
+			<ArrowButton open={props.openAside} isOpen={props.asideIsOpen} />
+			<aside className={props.asideIsOpen ? `${styles.container_open} ${styles.container}` : styles.container}>
+				<form className={styles.form} onSubmit={props.onClickApply} >
+					<Text
+						as='h2'
+						size={31}
+						weight={800}
+						uppercase={true}
+						children={'Задайте параметры'}
+					/>
+					<Select
+						options={props.fontFamilyOptions}
+						selected={props.formState.fontFamilyOption}
+						title='Шрифт'
+						onChange={props.changeFontFamily}
+					/>
+					<RadioGroup
+						name={'fontSize'}
+						title={'Размер шрифта'}
+						options={props.fontSizeOptions}
+						selected={props.formState.fontSizeOption}
+						onChange={props.changeFontSize}
+
+					/>
+					<Select
+						options={props.fontColors}
+						selected={props.formState.fontColor}
+						title='Цвет шрифта'
+						onChange={props.changeColor}
+					/>
+					<Separator />
+					<Select
+						options={props.contentWidthArr}
+						selected={props.formState.contentWidth}
+						title='Ширина контента'
+						onChange={props.changeWidthContent}
+					/>
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' />
+						<Button onClick={props.onClickReset} title='Сбросить' type='reset' />
 						<Button title='Применить' type='submit' />
 					</div>
 				</form>
