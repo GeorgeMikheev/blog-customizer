@@ -1,24 +1,79 @@
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 
+import { useState, useRef, useEffect } from 'react';
+
 import styles from './ArticleParamsForm.module.scss';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Text } from '../text';
 import { Separator } from '../separator';
+
+import {
+	fontFamilyOptions,
+	fontSizeOptions,
+	fontColors,
+	contentWidthArr,
+	backgroundColors,
+	OptionType,
+	defaultArticleState,
+} from 'src/constants/articleProps';
 import { TProps } from 'src/index';
 
 export const ArticleParamsForm = (props: TProps) => {
+	const [asideIsOpen, setAsideOpen] = useState(false);
+	const [formState, setFormState] = useState(props.pageState);
+	const asideRef = useRef<HTMLDivElement>(null);
+
+	const changeStateAside = () => setAsideOpen((prevState) => !prevState);
+
+	const changeFontFamily = (selected: OptionType) =>
+		setFormState({ ...formState, fontFamilyOption: selected });
+	const changeFontSize = (selected: OptionType) =>
+		setFormState({ ...formState, fontSizeOption: selected });
+	const changeColor = (selected: OptionType) =>
+		setFormState({ ...formState, fontColor: selected });
+	const changeBackgroundColor = (selected: OptionType) =>
+		setFormState({ ...formState, backgroundColor: selected });
+	const changeWidthContent = (selected: OptionType) =>
+		setFormState({ ...formState, contentWidth: selected });
+
+	const onClickReset = () => {
+		setFormState(defaultArticleState);
+		props.setPageState(defaultArticleState);
+	};
+
+	const onClickApply = (evt: React.FormEvent) => {
+		evt.preventDefault();
+		props.setPageState(formState);
+	};
+
+	useEffect(() => {
+		const handleClickOutside = (e: any) => {
+			if(asideIsOpen && asideRef.current && !asideRef.current.contains(e.target)) {
+				setAsideOpen(false);
+			}
+		}
+
+		if(asideIsOpen) document.addEventListener('click', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		}
+	}, [asideIsOpen]);
+
+
+
 	return (
-		<>
-			<ArrowButton open={props.changeStateAside} isOpen={props.asideIsOpen} />
+		<div ref={asideRef} >
+			<ArrowButton open={changeStateAside} isOpen={asideIsOpen} />
 			<aside
 				className={
-					props.asideIsOpen
+					asideIsOpen
 						? `${styles.container_open} ${styles.container}`
 						: styles.container
 				}>
-				<form className={styles.form} onSubmit={props.onClickApply}>
+				<form className={styles.form} onSubmit={onClickApply}>
 					<Text
 						as='h2'
 						size={31}
@@ -27,40 +82,40 @@ export const ArticleParamsForm = (props: TProps) => {
 						children={'Задайте параметры'}
 					/>
 					<Select
-						options={props.fontFamilyOptions}
-						selected={props.formState.fontFamilyOption}
+						options={fontFamilyOptions}
+						selected={formState.fontFamilyOption}
 						title='Шрифт'
-						onChange={props.changeFontFamily}
+						onChange={changeFontFamily}
 					/>
 					<RadioGroup
 						name={'fontSize'}
 						title={'Размер шрифта'}
-						options={props.fontSizeOptions}
-						selected={props.formState.fontSizeOption}
-						onChange={props.changeFontSize}
+						options={fontSizeOptions}
+						selected={formState.fontSizeOption}
+						onChange={changeFontSize}
 					/>
 					<Select
-						options={props.fontColors}
-						selected={props.formState.fontColor}
+						options={fontColors}
+						selected={formState.fontColor}
 						title='Цвет шрифта'
-						onChange={props.changeColor}
+						onChange={changeColor}
 					/>
 					<Separator />
 					<Select
-						options={props.backgroundColors}
-						selected={props.formState.backgroundColor}
+						options={backgroundColors}
+						selected={formState.backgroundColor}
 						title='Цвет фона'
-						onChange={props.changeBackgroundColor}
+						onChange={changeBackgroundColor}
 					/>
 					<Select
-						options={props.contentWidthArr}
-						selected={props.formState.contentWidth}
+						options={contentWidthArr}
+						selected={formState.contentWidth}
 						title='Ширина контента'
-						onChange={props.changeWidthContent}
+						onChange={changeWidthContent}
 					/>
 					<div className={styles.bottomContainer}>
 						<Button
-							onClick={props.onClickReset}
+							onClick={onClickReset}
 							title='Сбросить'
 							type='reset'
 						/>
@@ -68,6 +123,6 @@ export const ArticleParamsForm = (props: TProps) => {
 					</div>
 				</form>
 			</aside>
-		</>
+		</div>
 	);
 };
